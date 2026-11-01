@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Condomínio – Gestão</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#eceee9;--surf:#fff;--ink:#1d2830;--mut:#5d6b73;--line:#d5d9d3;--acc:#0e6a68;--acc-i:#fff;--warn:#a8650f;--ok:#2c7a3f;--bad:#b3362b;--r:10px;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a1e;--surf:#1d262c;--ink:#e6ebe8;--mut:#9aa8ae;--line:#33414a;--acc:#4cc3bd;--acc-i:#0b1a19;--warn:#e0a24d;--ok:#6cc47f;--bad:#ef7d72}}
+:root[data-theme="dark"]{--bg:#141a1e;--surf:#1d262c;--ink:#e6ebe8;--mut:#9aa8ae;--line:#33414a;--acc:#4cc3bd;--acc-i:#0b1a19;--warn:#e0a24d;--ok:#6cc47f;--bad:#ef7d72}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Public Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",sans-serif;margin:0;line-height:1.15}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surf);margin-top:4px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+label{display:block;font-weight:500;margin-top:14px}
+.btn{background:var(--acc);color:var(--acc-i);border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn.bad{background:var(--bad);color:#fff}
+a.lnk{color:var(--acc);cursor:pointer;text-decoration:underline;background:none;border:0;padding:0}
+.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.brand{background:var(--acc);color:var(--acc-i);padding:48px;display:flex;flex-direction:column;justify-content:space-between}
+.brand h1{font-size:44px;max-width:11ch}
+.brand p{max-width:34ch;opacity:.9}
+.bldg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:260px}
+.bldg i{aspect-ratio:1;border-radius:3px;background:currentColor;opacity:.25}
+.bldg i.on{opacity:.9}
+.card-auth{padding:48px;display:flex;align-items:center;justify-content:center}
+.card-auth .box{width:100%;max-width:380px}
+.card-auth h2{font-size:28px;margin-bottom:4px}
+.msg{padding:10px 12px;border-radius:8px;margin-top:14px;font-size:14px;border:1px solid var(--line);background:var(--surf)}
+.msg.err{border-color:var(--bad);color:var(--bad)}.msg.ok{border-color:var(--ok);color:var(--ok)}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px;flex-wrap:wrap}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+aside{background:var(--surf);border-right:1px solid var(--line);padding:20px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+aside h3{padding:0 10px 14px;font-size:20px}
+aside button.nav{text-align:left;background:none;border:0;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--mut);font-weight:500}
+aside button.nav.on{background:var(--acc);color:var(--acc-i)}
+.who{margin-top:auto;padding:10px;font-size:13px;color:var(--mut)}
+main{padding:28px;max-width:980px;width:100%}
+main h2{font-size:28px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stat b{display:block;font:700 30px "Bricolage Grotesque",sans-serif}
+.stat span{color:var(--mut);font-size:13px}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:18px}
+.panel h3{font-size:18px;margin-bottom:10px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:500}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid currentColor}
+.t-ok{color:var(--ok)}.t-w{color:var(--warn)}.t-b{color:var(--bad)}
+.aviso{border-left:3px solid var(--acc);padding:4px 0 4px 12px;margin-bottom:14px}
+.aviso small{color:var(--mut)}
+.empty{color:var(--mut);padding:8px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.top{display:none}
+@media(max-width:760px){
+.auth{grid-template-columns:1fr}.brand{padding:28px}.brand h1{font-size:32px}.bldg{display:none}.card-auth{padding:28px 20px}
+.shell{grid-template-columns:1fr}
+aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line);padding:10px}
+aside h3{width:100%;padding:0 4px 6px}.who{margin:0;width:100%}
+main{padding:18px 14px}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const KEY="condo_db_v1";
+let db,me=null,view="resumo",av="login",reset=null,flash=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const fmt=d=>new Date(d).toLocaleDateString("pt-PT");
+const eur=n=>Number(n).toLocaleString("pt-PT",{style:"currency",currency:"EUR"});
+function seed(){return{users:[{id:"adm",user:"admin",email:"admin@condominio.pt",pass:"admin",role:"admin",nome:"Administrador",fracao:"—",status:"ativo"}],avisos:[],quotas:[],ocorrencias:[]}}
+function load(){try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){db=null}if(!db||!db.users)db=seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+function setFlash(t,k="err"){flash={t,k}}
+function msg(){const f=flash;flash=null;return f?`<div class="msg ${f.k}">${esc(f.t)}</div>`:""}
+
+/* ---------- Autenticação ---------- */
+function authHTML(){
+const brand=`<div class="brand"><div><h1>Condomínio em ordem.</h1><p>Quotas, avisos e ocorrências do prédio num só lugar.</p></div><div class="bldg">${Array.from({length:24},(_,i)=>`<i class="${[1,4,8,9,14,17,20,22].includes(i)?"on":""}"></i>`).join("")}</div></div>`;
+let f="";
+if(av==="login")f=`<h2>Entrar</h2><p style="color:var(--mut);margin:0">Use o seu utilizador ou email.</p>${msg()}
+<form id="f-login"><label>Utilizador ou email<input name="u" autocomplete="username" required></label>
+<label>Palavra-passe<input name="p" type="password" autocomplete="current-password" required></label>
+<div class="row"><button class="btn">Entrar</button><button type="button" class="lnk-b" data-go="forgot" style="display:none"></button></div></form>
+<div class="row"><a class="lnk" data-go="forgot">Esqueceu a palavra-passe?</a><a class="lnk" data-go="reg">Criar conta</a></div>`;
+if(av==="reg")f=`<h2>Criar conta</h2><p style="color:var(--mut);margin:0">O administrador aprova o seu registo.</p>${msg()}
+<form id="f-reg"><label>Nome completo<input name="nome" required></label>
+<label>Fração (ex.: 2.º Esq.)<input name="fracao" required></label>
+<label>Email<input name="email" type="email" autocomplete="email" required></label>
+<label>Palavra-passe (mín. 4 caracteres)<input name="p" type="password" autocomplete="new-password" minlength="4" required></label>
+<div class="row"><button class="btn">Registar</button><a class="lnk" data-go="login">Já tenho conta</a></div></form>`;
+if(av==="forgot")f=`<h2>Recuperar acesso</h2>${msg()}${!reset?`<p style="color:var(--mut);margin:0">Indique o email da conta.</p>
+<form id="f-forgot"><label>Email<input name="e" type="email" required></label>
+<div class="row"><button class="btn">Enviar código</button><a class="lnk" data-go="login">Voltar</a></div></form>`:
+`<div class="msg ok">Demonstração: sem servidor de email, o código é mostrado aqui: <b>${reset.code}</b></div>
+<form id="f-reset"><label>Código<input name="c" inputmode="numeric" required></label>
+<label>Nova palavra-passe<input name="p" type="password" minlength="4" required></label>
+<div class="row"><button class="btn">Guardar</button><a class="lnk" data-go="login">Cancelar</a></div></form>`}`;
+return`<div class="auth">${brand}<div class="card-auth"><div class="box">${f}</div></div></div>`}
+
+function onAuthSubmit(e){
+e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
+if(e.target.id==="f-login"){
+const k=d.u.trim().toLowerCase();
+const u=db.users.find(x=>(x.user===k||x.email.toLowerCase()===k)&&x.pass===d.p);
+if(!u){setFlash("Utilizador ou palavra-passe incorretos.");return render()}
+if(u.status==="pendente"){setFlash("A sua conta aguarda aprovação do administrador.");return render()}
+if(u.status==="recusado"){setFlash("O seu registo foi recusado. Contacte o administrador.");return render()}
+me=u.id;view="resumo";try{sessionStorage.setItem("condo_me",me)}catch(x){}
+}
+if(e.target.id==="f-reg"){
+const em=d.email.trim().toLowerCase();
+if(db.users.some(x=>x.email.toLowerCase()===em)){setFlash("Já existe uma conta com este email.");return render()}
+db.users.push({id:uid(),user:em,email:em,pass:d.p,role:"morador",nome:d.nome.trim(),fracao:d.fracao.trim(),status:"pendente"});save();
+av="login";setFlash("Registo enviado. Aguarde a aprovação do administrador.","ok")}
+if(e.target.id==="f-forgot"){
+const u=db.users.find(x=>x.email.toLowerCase()===d.e.trim().toLowerCase());
+if(!u){setFlash("Não existe conta com esse email.");return render()}
+reset={id:u.id,code:String(Math.floor(100000+Math.random()*900000))}}
+if(e.target.id==="f-reset"){
+if(d.c.trim()!==reset.code){setFlash("Código incorreto.");return render()}
+const u=db.users.find(x=>x.id===reset.id);u.pass=d.p;save();reset=null;av="login";setFlash("Palavra-passe alterada. Já pode entrar.","ok")}
+render()}
+
+/* ---------- Aplicação ---------- */
+const user=()=>db.users.find(u=>u.id===me);
+const moradores=()=>db.users.filter(u=>u.role==="morador");
+const tag=(t,c)=>`<span class="tag ${c}">${esc(t)}</span>`;
+const nomeDe=id=>(db.users.find(u=>u.id===id)||{nome:"(removido)"}).nome;
+
+function appHTML(){
+const u=user(),adm=u.role==="admin";
+const items=[["resumo","Resumo"],["quotas","Quotas"],["avisos","Avisos"],["ocorr","Ocorrências"]];
+if(adm)items.splice(1,0,["mor","Moradores"]);
+const pend=moradores().filter(x=>x.status==="pendente").length;
+return`<div class="shell"><aside><h3>Condomínio</h3>${items.map(([k,l])=>`<button class="nav ${view===k?"on":""}" data-view="${k}">${l}${k==="mor"&&pend?` (${pend})`:""}</button>`).join("")}
+<div class="who">${esc(u.nome)}<br>${adm?"Administração":"Fração "+esc(u.fracao)}<br><a class="lnk" data-act="out">Sair</a></div></aside><main>${msg()}${page(u,adm)}</main></div>`}
+
+function page(u,adm){
+const q=adm?db.quotas:db.quotas.filter(x=>x.uid===u.id);
+const oc=adm?db.ocorrencias:db.ocorrencias.filter(x=>x.uid===u.id);
+if(view==="resumo"){
+const div=q.filter(x=>!x.paga).reduce((s,x)=>s+Number(x.valor),0);
+const last=db.avisos[0];
+const st=adm?`<div class="stat"><b>${moradores().filter(x=>x.status==="ativo").length}</b><span>Moradores ativos</span></div><div class="stat"><b>${moradores().filter(x=>x.status==="pendente").length}</b><span>Registos por aprovar</span></div>`:`<div class="stat"><b>${esc(u.fracao)}</b><span>A sua fração</span></div>`;
+return`<h2>${adm?"Resumo do condomínio":"Olá, "+esc(u.nome.split(" ")[0])}</h2><div class="grid">${st}
+<div class="stat"><b>${eur(div)}</b><span>Quotas em dívida</span></div>
+<div class="stat"><b>${oc.filter(x=>x.estado!=="Resolvida").length}</b><span>Ocorrências abertas</span></div></div>
+<div class="panel"><h3>Último aviso</h3>${last?avisoH(last):`<div class="empty">Sem avisos publicados.</div>`}</div>`}
+if(view==="mor"&&adm){
+const l=moradores();
+return`<h2>Moradores</h2><div class="panel tw">${l.length?`<table><tr><th>Nome</th><th>Fração</th><th>Email</th><th>Estado</th><th></th></tr>${l.map(m=>`<tr><td>${esc(m.nome)}</td><td>${esc(m.fracao)}</td><td>${esc(m.email)}</td><td>${tag(m.status,m.status==="ativo"?"t-ok":m.status==="pendente"?"t-w":"t-b")}</td><td style="white-space:nowrap">${m.status!=="ativo"?`<button class="btn sm" data-act="apr" data-id="${m.id}">Aprovar</button> `:""}${m.status==="pendente"?`<button class="btn sm ghost" data-act="rec" data-id="${m.id}">Recusar</button> `:""}<button class="btn sm ghost" data-act="rm" data-id="${m.id}">Remover</button></td></tr>`).join("")}</table>`:`<div class="empty">Ainda não há moradores registados. Peça-lhes que criem conta no ecrã de entrada.</div>`}</div>`}
+if(view==="quotas"){
+return`<h2>Quotas</h2>${adm?`<div class="panel"><h3>Lançar quota a todos os moradores ativos</h3><form id="f-quota" class="two"><label>Descrição<input name="d" placeholder="Quota de novembro 2026" required></label><label>Valor (€)<input name="v" type="number" step="0.01" min="0" required></label><div><button class="btn">Lançar quotas</button></div></form></div>`:""}
+<div class="panel tw">${q.length?`<table><tr>${adm?"<th>Morador</th>":""}<th>Descrição</th><th>Valor</th><th>Estado</th>${adm?"<th></th>":""}</tr>${q.map(x=>`<tr>${adm?`<td>${esc(nomeDe(x.uid))}</td>`:""}<td>${esc(x.desc)}</td><td>${eur(x.valor)}</td><td>${x.paga?tag("Paga","t-ok"):tag("Em dívida","t-b")}</td>${adm?`<td><button class="btn sm ghost" data-act="paga" data-id="${x.id}">${x.paga?"Marcar em dívida":"Marcar paga"}</button></td>`:""}</tr>`).join("")}</table>`:`<div class="empty">Sem quotas registadas.</div>`}</div>`}
+if(view==="avisos"){
+return`<h2>Avisos</h2>${adm?`<div class="panel"><h3>Novo aviso</h3><form id="f-aviso"><label>Título<input name="t" required></label><label>Mensagem<textarea name="m" rows="3" required></textarea></label><div class="row"><button class="btn">Publicar</button></div></form></div>`:""}
+<div class="panel">${db.avisos.length?db.avisos.map(a=>avisoH(a,adm)).join(""):`<div class="empty">Sem avisos publicados.</div>`}</div>`}
+if(view==="ocorr"){
+return`<h2>Ocorrências</h2>${!adm?`<div class="panel"><h3>Comunicar ocorrência</h3><form id="f-oc"><label>Assunto<input name="t" placeholder="Ex.: Luz da escada avariada" required></label><label>Descrição<textarea name="m" rows="3" required></textarea></label><div class="row"><button class="btn">Enviar</button></div></form></div>`:""}
+<div class="panel tw">${oc.length?`<table><tr><th>Data</th>${adm?"<th>Morador</th>":""}<th>Assunto</th><th>Estado</th></tr>${oc.map(o=>`<tr><td>${fmt(o.data)}</td>${adm?`<td>${esc(nomeDe(o.uid))}</td>`:""}<td><b>${esc(o.t)}</b><br><span style="color:var(--mut)">${esc(o.m)}</span></td><td>${adm?`<select data-oc="${o.id}">${["Aberta","Em curso","Resolvida"].map(s=>`<option ${s===o.estado?"selected":""}>${s}</option>`).join("")}</select>`:tag(o.estado,o.estado==="Resolvida"?"t-ok":o.estado==="Em curso"?"t-w":"t-b")}</td></tr>`).join("")}</table>`:`<div class="empty">Sem ocorrências.</div>`}</div>`}
+return""}
+function avisoH(a,adm){return`<div class="aviso"><b>${esc(a.t)}</b><br><small>${fmt(a.data)}</small><div>${esc(a.m)}</div>${adm?`<a class="lnk" data-act="delav" data-id="${a.id}" style="font-size:13px">Apagar</a>`:""}</div>`}
+
+function onAppSubmit(e){
+e.preventDefault();const d=Object.fromEntries(new FormData(e.target)),id=e.target.id;
+if(id==="f-quota"){const a=moradores().filter(x=>x.status==="ativo");
+if(!a.length){setFlash("Não há moradores ativos para receber a quota.");return render()}
+a.forEach(m=>db.quotas.unshift({id:uid(),uid:m.id,desc:d.d,valor:Number(d.v),paga:false}));setFlash(`Quota lançada a ${a.length} morador(es).`,"ok")}
+if(id==="f-aviso"){db.avisos.unshift({id:uid(),t:d.t,m:d.m,data:Date.now()});setFlash("Aviso publicado.","ok")}
+if(id==="f-oc"){db.ocorrencias.unshift({id:uid(),uid:me,t:d.t,m:d.m,estado:"Aberta",data:Date.now()});setFlash("Ocorrência enviada.","ok")}
+save();render()}
+
+document.addEventListener("submit",e=>{if(!e.target.id)return;me&&user()?onAppSubmit(e):onAuthSubmit(e)});
+document.addEventListener("change",e=>{const id=e.target.dataset.oc;if(id){db.ocorrencias.find(o=>o.id===id).estado=e.target.value;save();render()}});
+document.addEventListener("click",e=>{
+const t=e.target.closest("[data-go],[data-view],[data-act]");if(!t)return;
+if(t.dataset.go){av=t.dataset.go;reset=null;flash=null;return render()}
+if(t.dataset.view){view=t.dataset.view;return render()}
+const a=t.dataset.act,id=t.dataset.id,m=db.users.find(x=>x.id===id);
+if(a==="out"){me=null;av="login";try{sessionStorage.removeItem("condo_me")}catch(x){}return render()}
+if(a==="apr"){m.status="ativo";setFlash(`${m.nome} aprovado.`,"ok")}
+if(a==="rec")m.status="recusado";
+if(a==="rm"){if(!confirm(`Remover ${m.nome}? As quotas e ocorrências dessa conta também serão apagadas.`))return;
+db.users=db.users.filter(x=>x.id!==id);db.quotas=db.quotas.filter(x=>x.uid!==id);db.ocorrencias=db.ocorrencias.filter(x=>x.uid!==id)}
+if(a==="paga"){const q=db.quotas.find(x=>x.id===id);q.paga=!q.paga}
+if(a==="delav")db.avisos=db.avisos.filter(x=>x.id!==id);
+save();render()});
+
+function render(){$("#root").innerHTML=me&&user()?appHTML():authHTML()}
+load();
+try{const s=sessionStorage.getItem("condo_me");if(s&&db.users.some(u=>u.id===s&&u.status==="ativo"))me=s}catch(e){}
+render();
+</script>
+</body>
+</html>
